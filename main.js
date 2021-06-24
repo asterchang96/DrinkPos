@@ -1,31 +1,5 @@
 const alphaPos = new AlphaPos()
 
-
-
-function Drink(name, sugar, ice){ //飲料物件產生
-  this.name = name
-  this.sugar = sugar
-  this.ice = ice
-}
-
-Drink.prototype.price = function(){ //取得飲料價格放入Drink中
-  switch(this.name){
-    case 'Black Tea':
-    case 'Oolong Tea':
-    case 'Baozong Tea':
-    case 'Green Tea':
-      return 30
-    case 'Bubble Milk Tea':
-    case 'Lemon Green Tea':
-      return 50
-    case 'Black Tea Latte':
-    case 'Matcha Latte':
-      return 55
-    default:
-      alert('No this drink')
-  }
-}
-
 const addDrinkButton = document.querySelector('[data-alpha-pos="add-drink"]')
 addDrinkButton.addEventListener('click', function(){
   // 1. 取得店員選擇的飲料品項、甜度和冰塊
@@ -79,15 +53,66 @@ AlphaPos.prototype.addDrink = function (drink) {
 }
 
 orderLists.addEventListener('click', function(event) {
-  console.log(event.target)
+  //console.log(event.target)
   let isDeleteButton = event.target.matches('[data-alpha-pos="delete-drink"]')
   if(!isDeleteButton) {
     return
   }
   //delete
   alphaPos.deleteDrink(event.target.parentElement.parentElement.parentElement)
+
+
 })
 
 AlphaPos.prototype.deleteDrink = function (target) {
   target.remove()
+}
+
+//總金額 checkout
+AlphaPos.prototype.checkout = function () {
+  let totalAmount = 0
+  document.querySelectorAll('[data-drink-price]').forEach(function(drink){
+    totalAmount += Number(drink.textContent) 
+  })
+  return totalAmount
+}
+
+AlphaPos.prototype.clearOrder = function (target) {
+  target.querySelectorAll('.card').forEach(function(card) {
+    card.remove()
+  })
+}
+
+const checkoutButton = document.querySelector('[data-alpha-pos="checkout"')
+checkoutButton.addEventListener('click', function() {
+  // 1. calculate total amount
+  alert(`Total amount of drinks：$${alphaPos.checkout()}`)
+
+  // 2. reset the order list
+  alphaPos.clearOrder(orderLists)
+})
+
+
+function Drink(name, sugar, ice){ //飲料物件產生
+  this.name = name
+  this.sugar = sugar
+  this.ice = ice
+}
+
+Drink.prototype.price = function(){ //取得飲料價格放入Drink中
+  switch(this.name){
+    case 'Black Tea':
+    case 'Oolong Tea':
+    case 'Baozong Tea':
+    case 'Green Tea':
+      return 30
+    case 'Bubble Milk Tea':
+    case 'Lemon Green Tea':
+      return 50
+    case 'Black Tea Latte':
+    case 'Matcha Latte':
+      return 55
+    default:
+      alert('No this drink')
+  }
 }
